@@ -15,9 +15,11 @@ num_cols=$(tput cols)
 strung1=""
 strung2="  "
 strung3="    "
+strung4="      "
 Pos1=0
 Pos2=0
 Pos3=0
+Pos4=0
 
 function cleanup() {
 	tput cnorm
@@ -42,19 +44,25 @@ function AddString() {
 	then
 		len=$(shuf -i 1-15 -n 1)
 		strung1=$(echo $RANDOM | md5sum | cut -c 1-$len)
-		Pos1=$(shuf -i 1-190 -n 1)
+		Pos1=$(shuf -i 1-$num_cols -n 1)
 	fi
 	if [[ $strung2 == "" ]] 
 	then
 		len=$(shuf -i 1-15 -n 1)
 		strung2=$(echo $RANDOM | md5sum | cut -c 1-$len)
-		Pos2=$(shuf -i 1-190 -n 1)
+		Pos2=$(shuf -i 1-$num_cols -n 1)
 	fi
 	if [[ $strung3 == "" ]] 
 	then
 		len=$(shuf -i 1-15 -n 1)
 		strung3=$(echo $RANDOM | md5sum | cut -c 1-$len)
-		Pos3=$(shuf -i 1-190 -n 1)
+		Pos3=$(shuf -i 1-$num_cols -n 1)
+	fi
+	if [[ $strung4 == "" ]] 
+	then
+		len=$(shuf -i 1-15 -n 1)
+		strung4=$(echo $RANDOM | md5sum | cut -c 1-$len)
+		Pos4=$(shuf -i 1-$num_cols -n 1)
 	fi
 	#echo $Pos
 	#echo $strung
@@ -87,10 +95,20 @@ function ManageStrung3() {
 	AddString
 	fi
 }
+function ManageStrung4() {
+	if [[ $strung4 != "" ]] 
+	then
+		matrix[0,$Pos4]=${strung4:0:1}
+		strung4="${strung4:1}"
+	else
+	AddString
+	fi
+}
 function ManageStrungs(){
 	ManageStrung1
 	ManageStrung2
 	ManageStrung3
+	ManageStrung4
 }
 
 trap cleanup EXIT
@@ -121,7 +139,7 @@ do
 
 	#fill future line with spaces
 	for ((j=1;j<=num_cols;j++)) do
-			L=$((i-1))
+	#		L=$((i-1))
         matrix[0,$j]=" "
     done
     
@@ -142,7 +160,10 @@ do
 			echo ""
 		fi
 	done
-	sleep 0.05
+#if client pays for optimization comment another sleep
+#	sleep 1
+#	sleep 1 
+#	sleep 1
 done
 
 
